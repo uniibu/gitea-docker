@@ -1,33 +1,24 @@
-version: "3"
-
-networks:
-  gitea:
-    external: false
-
-volumes:
-  gitea:
+version: "3.2"
 
 services:
-  server:
+  web_gitea:
     image: gitea/gitea:latest
     env_file: 
       - gitea.env
     restart: always
-    networks:
-      - gitea
     volumes:
-      - gitea:/data
+      - "/home/git/data:/data"
     ports:
       - "3000:3000"
-      - "222:22"
+      - "2221:22"
     depends_on:
-      - db
-  db:
-    image: mysql:5.7
+      - db_gitea
+  db_gitea:
+    image: mariadb:10
     restart: always
     env_file: 
       - db.env
     networks:
       - gitea
     volumes:
-      - ./mysql:/var/lib/mysql
+      - ./db/:/var/lib/mysql
