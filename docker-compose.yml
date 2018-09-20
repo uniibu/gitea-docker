@@ -18,7 +18,5 @@ services:
     restart: always
     env_file: 
       - db.env
-    networks:
-      - gitea
     volumes:
       - ./db/:/var/lib/mysql
