@@ -1,13 +1,34 @@
 version: "2"
 
+networks:
+  gitea:
+    external: false
+
 services:
-  web_gitea:
+  server:
     image: gitea/gitea:latest
-    env_file: 
-      - gitea.env
+    environment:
+      - USER_UID=1000
+      - USER_GID=1000
     restart: always
+    networks:
+      - gitea
     volumes:
-      - "/home/git/data:/data"
+      - ./gitea:/data
     ports:
       - "3000:3000"
-      - "2221:22"
+      - "222:22"
+    depends_on:
+      - db
+      
+  db:
+    image: postgres:9.6
+    restart: always
+    environment:
+      - POSTGRES_USER=gitea
+      - POSTGRES_PASSWORD=gitea
+      - POSTGRES_DB=gitea
+    networks:
+      - gitea
+    volumes:
+      - ./postgres:/var/lib/postgresql/data
